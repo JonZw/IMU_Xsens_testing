@@ -6,6 +6,8 @@
 #  4.) Computation of Total Body Angular Momentum (2 functions: one for linear(?), one for angular momentum)
 #  Split the function in more scripts, if more readable
 #  Note: Apparently a lot of code needed, maybe I should just implement the computation and not the whole thing
+
+# Following function might not be necessary
 def in_stream():
     pass
 
