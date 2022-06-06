@@ -1,4 +1,3 @@
-from pathlib import Path
 
 # TODO:
 #  Implement the following
@@ -10,8 +9,12 @@ from pathlib import Path
 #  Note: Apparently a lot of code needed, maybe I should just implement the computation and not the whole thing
 
 # Following function might not be necessary
+import mtdevice
+
+
 def in_stream():
     pass
+
 
 def com_comp():
     pass
@@ -24,5 +27,6 @@ def moi_comp():
 def tbam_comp():
     pass
 
+
 if __name__ == '__main__':
-    pass
+    mtdevice.main()

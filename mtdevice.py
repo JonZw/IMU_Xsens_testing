@@ -1707,7 +1707,3 @@ def get_settings(arg):
             return
     settings = timestamp | orient_mode | calib_mode | NED
     return settings
-
-
-if __name__ == '__main__':
-    main()
