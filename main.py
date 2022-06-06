@@ -1,3 +1,5 @@
+from pathlib import Path
+
 # TODO:
 #  Implement the following
 #  1.) Postprocessed Dataset reading
@@ -11,7 +13,6 @@
 def in_stream():
     pass
 
-
 def com_comp():
     pass
 
@@ -21,4 +22,7 @@ def moi_comp():
 
 
 def tbam_comp():
+    pass
+
+if __name__ == '__main__':
     pass
