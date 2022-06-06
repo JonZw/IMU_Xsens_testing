@@ -1,3 +1,4 @@
+import mtdevice
 
 # TODO:
 #  Implement the following
@@ -9,9 +10,6 @@
 #  Note: Apparently a lot of code needed, maybe I should just implement the computation and not the whole thing
 
 # Following function might not be necessary
-import mtdevice
-
-
 def in_stream():
     pass
 
