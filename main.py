@@ -1,6 +1,6 @@
 import mtdevice
 import math
-
+import numpy as np
 
 # TODO:
 #  Implement the following
@@ -90,6 +90,8 @@ thigh_lo = 12.1
 c_lo = 11.4
 f_lo = 12.4
 
+position = []  # Will be used to store to all position, will be later changed to JSON, just for testing for now
+
 
 # Following function(s) will be used to handle data. Change the functions later into a new script
 def input_data():
@@ -99,23 +101,31 @@ def input_data():
 
 
 def weightsegment_comp(mass):
-    weight = [hn_w * mass, t_w * mass, ua_w * mass, la_w * mass, hand_w * mass, thigh_w * mass, c_w * mass, f_w * mass]
+    sc_mass = mass * 0.01
+    weight = [hn_w * sc_mass, t_w * sc_mass, ua_w * sc_mass, la_w * sc_mass, hand_w * sc_mass, thigh_w * sc_mass, c_w * sc_mass,
+              f_w * sc_mass]
     return weight
 
 
 def longitudinal_comp(mass):
-    longitudinal = [hn_lo * mass, t_lo * mass, ua_lo * mass, la_lo * mass, hand_lo * mass, thigh_lo * mass, c_lo * mass,
-                    f_lo * mass]
+    sc_mass = mass * 0.01
+    longitudinal = [hn_lo * sc_mass, t_lo * sc_mass, ua_lo * sc_mass, la_lo * sc_mass, hand_lo * sc_mass, thigh_lo *
+                    sc_mass, c_lo * sc_mass, f_lo * sc_mass]
     return longitudinal
 
 
-def position_comp(pos):
+def position_comp(mass, pos):  # NOT YET CORRECT!!!
     # TODO:
     #  Find a way to assign the percentage weight to the exact position. -> Maybe structure it in a way and
     #  make it analog to weightsegment_comp(mass)
     #  So write a preprocessing functions, which sorts the input according to its labels in the right order
+    #  Figure out, how I can make the code below (especially the second variable I need to figure out on how to assign)
+    position.append(pos)
+    position[-1][0] = pos[0] * weightsegment_comp(mass)[0]  # SECOND VARIABLE IS ONLY EXAMPLE AND NOT RIGHT!!!
+    position[-1][1] = pos[1] * weightsegment_comp(mass)[1]  # SECOND VARIABLE IS ONLY EXAMPLE AND NOT RIGHT!!!
+    position[-1][2] = pos[2] * weightsegment_comp(mass)[2]  # SECOND VARIABLE IS ONLY EXAMPLE AND NOT RIGHT!!!
+    # TODO: Find a way to map x,y,z to the right weight percentage
 
-    pass
 
 def com_comp(mass, pos):  # mass is the body weight, pos needs to be an array containing x,y,z coordinates
     # TODO:
@@ -139,22 +149,18 @@ def com_comp(mass, pos):  # mass is the body weight, pos needs to be an array co
 
     return CoM
     """
-    """
+
     # Clearer Codesketch
-    com_x = 0
-    com_y = 0
-    com_z = 0
-    com = [com_x, com_y, com_z]
-    weight = weightsegment_comp(mass)
+    position_comp(mass, pos)
 
-    for i in range(0, 7):
-        com[0] += mass_i * pos.x_i
-        CoM[1] += mass_i * pos.y_i
-        CoM[2] += mass_i * pos.z_i
-
-    return com
     """
-    pass
+    for i in range(0, len(position) -1):
+        com_x += position[i][0]
+        com_y += position[i][1]
+        com_z += position[i][2]
+    """
+
+    return np.sum(position, axis=0) + mass # already enough code
 
 
 def moi_comp(mass):  # Need body weight as input
@@ -171,7 +177,8 @@ def moi_comp(mass):  # Need body weight as input
     longitudinal = longitudinal_comp(mass)
 
     i_c = 0
-    for i in range(0, 7):
+    # TODO: check numpy if there is a more efficient way
+    for i in range(0, len(weight)):
         i_c += weight[i] * pow((longitudinal[i]), 2)
 
     """
@@ -186,7 +193,6 @@ def moi_comp(mass):  # Need body weight as input
     """
 
     return i_c
-
 
 
 def tbam_comp(mass, ang_vel):
@@ -204,11 +210,16 @@ def tbam_comp(mass, ang_vel):
     #  NOTE: STILL HAVE TO COMPUTE THE TOTAL BODY ANGULAR MOMENTUM, FOR NOW IT IS ONLY FOR TEST: NEED TO WAIT FOR COM!
 
     i_c = moi_comp(mass)
-    l = i_c * ang_vel  # ang_vel = euler angles. NOTE: I maybe have to individually calculate the different axis angles.
+    l = i_c * ang_vel  # ang_vel = euler angles.
+    # TODO: I maybe have to individually calculate the different axis angles, if I need more than one axis to compute.
 
     return l
 
 
 if __name__ == '__main__':
-    # mtdevice.main()
-    pass
+    m = 75
+    ang_v = 0.3
+    p = [2, 3, 4]
+    print(com_comp(m, p))
+    print(tbam_comp(m, ang_v))
+    print(moi_comp(m))
