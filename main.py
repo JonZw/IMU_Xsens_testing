@@ -1,6 +1,7 @@
 import mtdevice
 import math
 
+
 # TODO:
 #  Implement the following
 #  1.) Postprocessed Dataset reading
@@ -26,7 +27,7 @@ def com_comp():
     pass
 
 
-def moi_comp(): # Need body weight as input
+def moi_comp(mass):  # Need body weight as input
     # TODO:
     #   Check if Xsens and/or Qualisys gives output of the MoI (after postprocessing)
     #   If yes, then output in form a diagram or return it for comparison
@@ -35,10 +36,11 @@ def moi_comp(): # Need body weight as input
     #   m_i = mass of i and r_i = denotes the trajectory of each particle i
     #   -> Is the parallel axis theorem maybe more accurate and easier to do?
     """
-    With the help of a paper I found average percentage, which is widely accepted (according to the paper)
+    With the help of a paper I found average percentage, which is widely accepted (Hall, according to the paper)
     The following percentages are the segment weighs according to the body mass and might be very helpful for Inertia
-    computation of rigid body with complex shape, which may get the most exact Center of mass result
-    Head&Neck = 8,2%
+    computation of rigid body with complex shape, which may get the most exact Center of mass result.
+
+    Head & Neck = 8,2%
     Torso = 46,84%
     Upper arm = 3,25 %
     Lower arm = 1,8%
@@ -69,6 +71,7 @@ def moi_comp(): # Need body weight as input
     Foot = 50.0
 
     Radius of gyration of body segments as a percentage of segment length.
+    -> Longitudinal axis is for now the most important (For standing/straight walking)
 
                 Radius of gyration according to the axis
     Segment        Sagittal    Frontal     Longitudinal
@@ -83,13 +86,39 @@ def moi_comp(): # Need body weight as input
 
     Pseudocode for Inertia with rigid bodies for complex shapes
     -> Might be not realistic, because I most likely will not get the mass from the body segments (and the radius)
+    -> Edit: Body segment weight and delta r is solved with the information above
+    """
+    # Weight percentage
+    hn_w = 8.2
+    t_w = 46.84
+    ua_w = 3.25
+    la_w = 1.8
+    hand_w = 0.65
+    thigh_w = 10.5
+    c_w = 4.75
+    f_w = 1.43
+
+    # Longitudinal axis percentage
+    hn_lo = 26.1
+    t_lo = 46.8
+    ua_lo = 18.2
+    la_lo = 13.0
+    hand_lo = 18.2
+    thigh_lo = 12.1
+    c_lo = 11.4
+    f_lo = 12.4
+
+    weight = [hn_w * mass, t_w * mass, ua_w * mass, la_w * mass, hand_w * mass, thigh_w * mass, c_w * mass, f_w * mass]
+
+    longitudinal = [hn_lo * mass, t_lo * mass, ua_lo * mass, la_lo * mass, hand_lo * mass, thigh_lo * mass, c_lo * mass,
+                    f_lo * mass]
 
     I_c = 0
-    for i in range(1,N):
-        I_c += mass_i * (delta-r_i)^2
-    I_c = - sum(1, N)
-    return I_c
+    for i in range(0, 7):
+        I_c += weight[i] * pow((longitudinal[i]), 2)
 
+    return I_c
+    """
     Pseudocode for Parallel Axis Theorem
     -> Easier than the first approach, because I don't need the indvidual mass.
     I will just assume the mass and the distance from the arm (and the range of the arm)
@@ -99,10 +128,9 @@ def moi_comp(): # Need body weight as input
     return I_pa
 
     """
-    pass
 
 
-def tbam_comp():
+def tbam_comp(mass, ang_vel):
     # needs as input the angular velocity of x,y,z and the number of datapoints
     # Angular Momentum = (moment of inertia)(angular velocity) angular velocity can be extracted out of Xsens and
     # Qualisys (Xsens has angular velocity, Qualisys can output 6 DOF)
@@ -114,12 +142,11 @@ def tbam_comp():
     #  -> Both have Euler and rotation matrix! Try Euler first
     #  2.) Output it in a way of return for comparison (print/diagram + return) -> Is the angular momentum of CoM ok?
     #  Formula will be: L = Ic * w, Ic will be computed in moi_comp()
-    """
-    I_C = moi_comp()
-    L = I_c * w, w = euler angles. NOTE: I possibly have to individually calculate the different axis angles.
 
-    return L
-    """
+    i_c = moi_comp(mass)
+    l = i_c * ang_vel  # ang_vel = euler angles. NOTE: I possibly have to individually calculate the different axis angles.
+
+    return l
 
 
 if __name__ == '__main__':
