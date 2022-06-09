@@ -1,5 +1,6 @@
 import mtdevice
 import math
+import json
 import numpy as np
 
 # TODO:
@@ -102,7 +103,8 @@ def input_data():
 
 def weightsegment_comp(mass):
     sc_mass = mass * 0.01
-    weight = [hn_w * sc_mass, t_w * sc_mass, ua_w * sc_mass, la_w * sc_mass, hand_w * sc_mass, thigh_w * sc_mass, c_w * sc_mass,
+    weight = [hn_w * sc_mass, t_w * sc_mass, ua_w * sc_mass, la_w * sc_mass, hand_w * sc_mass, thigh_w * sc_mass,
+              c_w * sc_mass,
               f_w * sc_mass]
     return weight
 
@@ -114,17 +116,33 @@ def longitudinal_comp(mass):
     return longitudinal
 
 
+
+
+
 def position_comp(mass, pos):  # NOT YET CORRECT!!!
     # TODO:
     #  Find a way to assign the percentage weight to the exact position. -> Maybe structure it in a way and
     #  make it analog to weightsegment_comp(mass)
     #  So write a preprocessing functions, which sorts the input according to its labels in the right order
     #  Figure out, how I can make the code below (especially the second variable I need to figure out on how to assign)
+
+    """
+    Following code could add a new json file with the content:
+    A = {
+    string: value
+    }
+
+    with open("data.json", "w") as fp:
+        json.dump(A, fp)
+
+    -> This might solve the problem with adding and computing all pos
+    """
+
     position.append(pos)
     position[-1][0] = pos[0] * weightsegment_comp(mass)[0]  # SECOND VARIABLE IS ONLY EXAMPLE AND NOT RIGHT!!!
     position[-1][1] = pos[1] * weightsegment_comp(mass)[1]  # SECOND VARIABLE IS ONLY EXAMPLE AND NOT RIGHT!!!
     position[-1][2] = pos[2] * weightsegment_comp(mass)[2]  # SECOND VARIABLE IS ONLY EXAMPLE AND NOT RIGHT!!!
-    # TODO: Find a way to map x,y,z to the right weight percentage
+    # TODO: Find a way to map x,y,z to the right weight percentage and that it is called for every position
 
 
 def com_comp(mass, pos):  # mass is the body weight, pos needs to be an array containing x,y,z coordinates
@@ -152,7 +170,7 @@ def com_comp(mass, pos):  # mass is the body weight, pos needs to be an array co
 
     # Clearer Codesketch
     position_comp(mass, pos)
-
+    # TODO: position_comp(mass, pos) is only called once for now, it needs to be called for every position in the end!!!
     """
     for i in range(0, len(position) -1):
         com_x += position[i][0]
@@ -160,7 +178,7 @@ def com_comp(mass, pos):  # mass is the body weight, pos needs to be an array co
         com_z += position[i][2]
     """
 
-    return np.sum(position, axis=0) + mass # already enough code
+    return np.sum(position, axis=0) / mass  # already enough code, check if the output is right later
 
 
 def moi_comp(mass):  # Need body weight as input
