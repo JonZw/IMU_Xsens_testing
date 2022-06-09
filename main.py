@@ -116,9 +116,6 @@ def longitudinal_comp(mass):
     return longitudinal
 
 
-
-
-
 def position_comp(mass, pos):  # NOT YET CORRECT!!!
     # TODO:
     #  Find a way to assign the percentage weight to the exact position. -> Maybe structure it in a way and
@@ -196,7 +193,7 @@ def moi_comp(mass):  # Need body weight as input
 
     i_c = 0
     # TODO: check numpy if there is a more efficient way
-    for i in range(0, len(weight)):
+    for i in range(0, len(weight)):  # Important: len(weight) == len(longitudinal) !!!
         i_c += weight[i] * pow((longitudinal[i]), 2)
 
     """
@@ -238,6 +235,6 @@ if __name__ == '__main__':
     m = 75
     ang_v = 0.3
     p = [2, 3, 4]
-    print(com_comp(m, p))
-    print(tbam_comp(m, ang_v))
-    print(moi_comp(m))
+    print(f"Center of mass: %s" % (com_comp(m, p)))
+    print(f"Total body angular momentum: %s" % (tbam_comp(m, ang_v)))
+    print(f"Motion of Inertia: %s" % (moi_comp(m)))
