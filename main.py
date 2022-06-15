@@ -15,6 +15,10 @@ import numpy as np
 #  Split the function in more scripts, if more readable
 #  Note: Apparently a lot of code needed, maybe I should just implement the computation and not the whole thing
 
+# First: Learn how they do it, then I can compare it the pro/cons
+# Try to compare parameters similar in Xsens and Qualisys, how paper usually compare/use the parameter
+# First start with Xsens and Qualisys: How do they compute CoM, ...
+# After getting aqcuainted, write my observation about how they can get improved (but first how they accurate they are)
 
 """
 With the help of a paper I found average percentage, which is widely accepted (Hall, according to the paper)
